@@ -29,7 +29,7 @@ class FirestoreOrderRepository implements OrderRepository {
     try {
       final document = order.id.isEmpty ? _orders.doc() : _orders.doc(order.id);
       final orderWithId = order.copyWith(id: document.id);
-      await document.set(orderWithId.toJson());
+      await document.set(orderWithId.toFirestore());
       return document.id;
     } on FirebaseException catch (error) {
       throw OrderRepositoryException(
@@ -46,12 +46,18 @@ class FirestoreOrderRepository implements OrderRepository {
     try {
       return _orders
           .where('userId', isEqualTo: userId)
-          .orderBy('createdAt', descending: true)
           .snapshots()
           .map(
-            (snapshot) => snapshot.docs
-                .map(OrderModel.fromFirestore)
-                .toList(growable: false),
+            (snapshot) {
+              final orders = snapshot.docs
+                  .map(OrderModel.fromFirestore)
+                  .toList(growable: false);
+              final sortedOrders = [...orders];
+              sortedOrders.sort(
+                (first, second) => second.createdAt.compareTo(first.createdAt),
+              );
+              return sortedOrders;
+            },
           )
           .handleError((Object error) {
         if (error is FirebaseException) {

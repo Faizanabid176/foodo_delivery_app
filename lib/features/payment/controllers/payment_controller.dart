@@ -7,6 +7,7 @@ import '../../../core/constants/app_strings.dart';
 import '../../../core/routes/app_routes.dart';
 import '../../cart/controllers/cart_controller.dart';
 import '../../orders/controllers/order_controller.dart';
+import '../../../data/repositories/order/firestore_order_repository.dart';
 
 class PaymentController extends GetxController {
   final isLoading = false.obs;
@@ -60,8 +61,15 @@ class PaymentController extends GetxController {
         total: cartController.total,
       );
       Get.offAllNamed(AppRoutes.orderSuccess);
-    } catch (_) {
-      errorMessage.value = AppStrings.paymentFailed;
+    } on OrderRepositoryException catch (error) {
+      errorMessage.value = error.message;
+    } on StripeException catch (error) {
+      errorMessage.value = error.error.localizedMessage ?? AppStrings.paymentFailed;
+    } on DioException catch (error) {
+      errorMessage.value =
+          error.response?.data.toString() ?? error.message ?? AppStrings.paymentFailed;
+    } catch (error) {
+      errorMessage.value = error.toString();
     } finally {
       isLoading.value = false;
     }

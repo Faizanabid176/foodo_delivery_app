@@ -40,11 +40,25 @@ class CartItemModel {
   }
 
   factory CartItemModel.fromJson(Map<String, dynamic> json) {
+    final foodItemJson = json['foodItem'] == null
+        ? {
+            'id': json['foodItemId'] ?? json['id'],
+            'name': json['name'],
+            'description': json['description'],
+            'category': json['category'],
+            'imageUrl': json['imageUrl'],
+            'price': json['price'],
+            'rating': json['rating'],
+            'restaurantId': json['restaurantId'],
+            'restaurantName': json['restaurantName'],
+            'preparationMinutes': json['preparationMinutes'],
+            'preparationTime': json['preparationTime'],
+            'isAvailable': json['isAvailable'],
+          }
+        : Map<String, dynamic>.from(json['foodItem'] as Map? ?? {});
     return CartItemModel(
       id: json['id'] as String? ?? '',
-      foodItem: FoodItemModel.fromJson(
-        Map<String, dynamic>.from(json['foodItem'] as Map? ?? {}),
-      ),
+      foodItem: FoodItemModel.fromJson(foodItemJson),
       quantity: (json['quantity'] as num? ?? 1).toInt(),
       selectedOptions: Map<String, dynamic>.from(
         json['selectedOptions'] as Map? ?? {},

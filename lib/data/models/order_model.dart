@@ -133,6 +133,41 @@ class OrderModel {
     };
   }
 
+  Map<String, dynamic> toFirestore() {
+    return {
+      'id': id,
+      'userId': userId,
+      'items': items
+          .map(
+            (item) => {
+              'id': item.id,
+              'foodItemId': item.foodItem.id,
+              'name': item.foodItem.name,
+              'description': item.foodItem.description,
+              'category': item.foodItem.category,
+              'imageUrl': item.foodItem.imageUrl,
+              'price': item.foodItem.price,
+              'quantity': item.quantity,
+              'totalPrice': item.totalPrice,
+              'selectedOptions': item.selectedOptions,
+              'specialInstructions': item.specialInstructions,
+            },
+          )
+          .toList(growable: false),
+      'status': status.name,
+      'deliveryAddress': deliveryAddress,
+      'paymentMethod': paymentMethod,
+      'subtotal': subtotal,
+      'deliveryFee': deliveryFee,
+      'tax': tax,
+      'total': total,
+      'createdAt': Timestamp.fromDate(createdAt),
+      'updatedAt': updatedAt == null ? null : Timestamp.fromDate(updatedAt!),
+      'deliveryInstructions': deliveryInstructions,
+      'stripePaymentIntentId': stripePaymentIntentId,
+    };
+  }
+
   static DateTime? _dateTimeFromJson(Object? value) {
     if (value == null) {
       return null;
