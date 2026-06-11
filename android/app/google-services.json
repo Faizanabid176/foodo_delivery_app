@@ -12,7 +12,12 @@
           "package_name": "com.faizan.foododeliveryapp"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "62117508278-rpqeb41tgr7rqs7s9l95c721hljdhv63.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDP8vp1WAAUr6bPBmbWPT0265bQymtv6L4"
@@ -20,7 +25,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "62117508278-rpqeb41tgr7rqs7s9l95c721hljdhv63.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
