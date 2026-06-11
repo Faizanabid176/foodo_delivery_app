@@ -23,6 +23,7 @@ class OrderController extends GetxController {
   final orders = <OrderModel>[].obs;
   final isLoading = false.obs;
   final errorMessage = ''.obs;
+  final _lastKnownStatuses = <String, OrderStatus>{};
   StreamSubscription<List<OrderModel>>? _ordersSubscription;
 
   OrderModel? get activeOrder {
@@ -43,9 +44,11 @@ class OrderController extends GetxController {
   void bindUserOrders() {
     final userId = _authRepository.currentUser?.uid;
     if (userId == null) {
+      _lastKnownStatuses.clear();
       return;
     }
     _ordersSubscription?.cancel();
+    _lastKnownStatuses.clear();
     _ordersSubscription = _orderRepository.streamUserOrders(userId).listen(
       (items) {
         _notifyStatusChanges(items);
@@ -101,15 +104,25 @@ class OrderController extends GetxController {
   }
 
   void _notifyStatusChanges(List<OrderModel> updatedOrders) {
+    final previousStatuses = Map<String, OrderStatus>.from(_lastKnownStatuses);
+    _lastKnownStatuses
+      ..clear()
+      ..addEntries(
+        updatedOrders.map((order) => MapEntry(order.id, order.status)),
+      );
+
+    if (previousStatuses.isEmpty) {
+      return;
+    }
     if (!Get.isRegistered<NotificationController>()) {
       return;
     }
     for (final updated in updatedOrders) {
-      final previous = orders.firstWhereOrNull((order) => order.id == updated.id);
-      if (previous != null && previous.status != updated.status) {
+      final previousStatus = previousStatuses[updated.id];
+      if (previousStatus != null && previousStatus != updated.status) {
         Get.find<NotificationController>().addNotification(
           title: AppStrings.orderStatusUpdated,
-          message: updated.status.label,
+          message: '#${updated.id} ${updated.status.label}',
           referenceId: updated.id,
         );
       }
