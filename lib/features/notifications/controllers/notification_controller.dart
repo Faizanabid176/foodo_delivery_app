@@ -4,6 +4,7 @@ import '../../../data/models/notification_model.dart';
 
 class NotificationController extends GetxController {
   final notifications = <NotificationModel>[].obs;
+  DateTime? _lastNotificationMessageAt;
 
   int get unreadCount =>
       notifications.where((notification) => !notification.isRead).length;
@@ -26,6 +27,7 @@ class NotificationController extends GetxController {
         referenceId: referenceId,
       ),
     );
+    _showNotificationMessage(title: title, message: message);
   }
 
   void markAsRead(String id) {
@@ -40,6 +42,25 @@ class NotificationController extends GetxController {
       notifications
           .map((notification) => notification.copyWith(isRead: true))
           .toList(growable: false),
+    );
+  }
+
+  void _showNotificationMessage({
+    required String title,
+    required String message,
+  }) {
+    final now = DateTime.now();
+    final lastShownAt = _lastNotificationMessageAt;
+    if (lastShownAt != null &&
+        now.difference(lastShownAt) < const Duration(milliseconds: 900)) {
+      return;
+    }
+    _lastNotificationMessageAt = now;
+    Get.closeAllSnackbars();
+    Get.snackbar(
+      title,
+      message,
+      duration: const Duration(milliseconds: 1400),
     );
   }
 }
