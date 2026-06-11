@@ -11,8 +11,12 @@ enum OrderStatus {
   cancelled;
 
   static OrderStatus fromValue(String value) {
+    final normalizedValue = value
+        .trim()
+        .replaceAll(RegExp(r'[\s_-]+'), '')
+        .toLowerCase();
     return OrderStatus.values.firstWhere(
-      (status) => status.name == value,
+      (status) => status.name.toLowerCase() == normalizedValue,
       orElse: () => OrderStatus.pending,
     );
   }

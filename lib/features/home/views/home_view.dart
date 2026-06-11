@@ -63,32 +63,44 @@ class HomeView extends GetView<ProductController> {
         ),
       ),
       bottomNavigationBar: Obx(
-        () => NavigationBar(
+        () {
+          final cartController = Get.find<CartController>();
+          final cartItemCount = cartController.itemCount;
+          return NavigationBar(
           selectedIndex: selectedIndex.value,
           onDestinationSelected: (index) => selectedIndex.value = index,
-          destinations: const [
-            NavigationDestination(
+          destinations: [
+            const NavigationDestination(
               icon: Icon(Icons.home_outlined),
               selectedIcon: Icon(Icons.home),
               label: AppStrings.homeNav,
             ),
-            NavigationDestination(
+            const NavigationDestination(
               icon: Icon(Icons.receipt_long_outlined),
               selectedIcon: Icon(Icons.receipt_long),
               label: AppStrings.ordersNav,
             ),
             NavigationDestination(
-              icon: Icon(Icons.shopping_cart_outlined),
-              selectedIcon: Icon(Icons.shopping_cart),
+              icon: Badge(
+                isLabelVisible: cartItemCount > 0,
+                label: Text('$cartItemCount'),
+                child: const Icon(Icons.shopping_cart_outlined),
+              ),
+              selectedIcon: Badge(
+                isLabelVisible: cartItemCount > 0,
+                label: Text('$cartItemCount'),
+                child: const Icon(Icons.shopping_cart),
+              ),
               label: AppStrings.cartNav,
             ),
-            NavigationDestination(
+            const NavigationDestination(
               icon: Icon(Icons.person_outline),
               selectedIcon: Icon(Icons.person),
               label: AppStrings.profileNav,
             ),
           ],
-        ),
+        );
+        },
       ),
     );
   }
@@ -96,6 +108,8 @@ class HomeView extends GetView<ProductController> {
 
 class _HomeContent extends GetView<ProductController> {
   const _HomeContent();
+
+  static DateTime? _lastAddToCartMessageAt;
 
   @override
   Widget build(BuildContext context) {
@@ -166,7 +180,7 @@ class _HomeContent extends GetView<ProductController> {
                   foodItem: product,
                   onAddToCart: () {
                     Get.find<CartController>().addItem(product);
-                    Get.snackbar(AppStrings.appName, AppStrings.addedToCart);
+                    _showAddToCartMessage();
                   },
                 );
               },
@@ -174,6 +188,22 @@ class _HomeContent extends GetView<ProductController> {
           }),
         ],
       ),
+    );
+  }
+
+  void _showAddToCartMessage() {
+    final now = DateTime.now();
+    final lastShownAt = _lastAddToCartMessageAt;
+    if (lastShownAt != null &&
+        now.difference(lastShownAt) < const Duration(milliseconds: 900)) {
+      return;
+    }
+    _lastAddToCartMessageAt = now;
+    Get.closeAllSnackbars();
+    Get.snackbar(
+      AppStrings.appName,
+      AppStrings.addedToCart,
+      duration: const Duration(milliseconds: 900),
     );
   }
 }

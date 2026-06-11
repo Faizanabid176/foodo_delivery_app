@@ -6,6 +6,9 @@ import '../../../data/models/food_item_model.dart';
 class CartController extends GetxController {
   final cartItems = <CartItemModel>[].obs;
 
+  int get itemCount =>
+      cartItems.fold(0, (total, item) => total + item.quantity);
+
   double get subtotal =>
       cartItems.fold(0, (total, item) => total + item.totalPrice);
 
