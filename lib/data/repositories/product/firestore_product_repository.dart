@@ -22,16 +22,16 @@ class FirestoreProductRepository implements ProductRepository {
   final FirebaseFirestore _firestore;
 
   CollectionReference<Map<String, dynamic>> get _products =>
-      _firestore.collection('products');
+      _firestore.collection('Fooditems');
 
   @override
   Future<List<FoodItemModel>> fetchAllProducts() async {
     try {
-      final snapshot = await _products
-          .where('isAvailable', isEqualTo: true)
-          .orderBy('name')
-          .get();
-      return snapshot.docs.map(FoodItemModel.fromFirestore).toList(growable: false);
+      final snapshot =
+          await _products.where('isAvailable', isEqualTo: true).get();
+      final products =
+          snapshot.docs.map(FoodItemModel.fromFirestore).toList(growable: false);
+      return _sortByName(products);
     } on FirebaseException catch (error) {
       throw ProductRepositoryException(
         error.message ?? 'Unable to fetch products.',
@@ -48,9 +48,10 @@ class FirestoreProductRepository implements ProductRepository {
       final snapshot = await _products
           .where('category', isEqualTo: category)
           .where('isAvailable', isEqualTo: true)
-          .orderBy('name')
           .get();
-      return snapshot.docs.map(FoodItemModel.fromFirestore).toList(growable: false);
+      final products =
+          snapshot.docs.map(FoodItemModel.fromFirestore).toList(growable: false);
+      return _sortByName(products);
     } on FirebaseException catch (error) {
       throw ProductRepositoryException(
         error.message ?? 'Unable to fetch products by category.',
@@ -59,5 +60,11 @@ class FirestoreProductRepository implements ProductRepository {
     } catch (_) {
       throw const ProductRepositoryException('Unable to fetch products by category.');
     }
+  }
+
+  List<FoodItemModel> _sortByName(List<FoodItemModel> products) {
+    final sortedProducts = [...products];
+    sortedProducts.sort((first, second) => first.name.compareTo(second.name));
+    return sortedProducts;
   }
 }

@@ -9,6 +9,7 @@ import 'core/constants/app_strings.dart';
 import 'core/routes/app_pages.dart';
 import 'core/routes/app_routes.dart';
 import 'core/theme/app_theme.dart';
+import 'features/cart/bindings/cart_binding.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,6 +34,7 @@ class FoodoApp extends StatelessWidget {
       title: AppStrings.appName,
       debugShowCheckedModeBanner: false,
       initialRoute: AppRoutes.signIn,
+      initialBinding: CartBinding(),
       getPages: AppPages.pages,
       theme: AppTheme.light,
       unknownRoute: AppPages.unknownRoute,

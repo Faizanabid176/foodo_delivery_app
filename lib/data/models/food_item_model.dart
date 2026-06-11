@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../core/constants/app_strings.dart';
+
 class FoodItemModel {
   const FoodItemModel({
     required this.id,
@@ -73,8 +75,10 @@ class FoodItemModel {
       price: (json['price'] as num? ?? 0).toDouble(),
       rating: (json['rating'] as num? ?? 0).toDouble(),
       restaurantId: json['restaurantId'] as String? ?? '',
-      restaurantName: json['restaurantName'] as String? ?? '',
-      preparationMinutes: (json['preparationMinutes'] as num? ?? 0).toInt(),
+      restaurantName: json['restaurantName'] as String? ?? AppStrings.appName,
+      preparationMinutes: _preparationMinutesFromJson(
+        json['preparationMinutes'] ?? json['preparationTime'],
+      ),
       isAvailable: json['isAvailable'] as bool? ?? true,
       createdAt: _dateTimeFromJson(json['createdAt']),
       updatedAt: _dateTimeFromJson(json['updatedAt']),
@@ -120,5 +124,16 @@ class FoodItemModel {
       return DateTime.tryParse(value);
     }
     return null;
+  }
+
+  static int _preparationMinutesFromJson(Object? value) {
+    if (value is num) {
+      return value.toInt();
+    }
+    if (value is String) {
+      final match = RegExp(r'\d+').firstMatch(value);
+      return int.tryParse(match?.group(0) ?? '') ?? 0;
+    }
+    return 0;
   }
 }

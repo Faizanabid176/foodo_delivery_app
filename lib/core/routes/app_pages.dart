@@ -4,8 +4,22 @@ import 'package:get/get.dart';
 
 import '../constants/app_strings.dart';
 import '../middleware/auth_middleware.dart';
-import '../../features/auth/presentation/bindings/sign_in_binding.dart';
-import '../../features/auth/presentation/pages/sign_in_page.dart';
+import '../../features/auth/bindings/auth_binding.dart';
+import '../../features/auth/views/login_view.dart';
+import '../../features/home/bindings/home_binding.dart';
+import '../../features/home/views/home_view.dart';
+import '../../features/notifications/bindings/notifications_binding.dart';
+import '../../features/notifications/views/notifications_view.dart';
+import '../../features/orders/bindings/orders_binding.dart';
+import '../../features/orders/views/order_detail_view.dart';
+import '../../features/orders/views/order_history_view.dart';
+import '../../features/payment/bindings/payment_binding.dart';
+import '../../features/payment/views/order_success_view.dart';
+import '../../features/payment/views/payment_view.dart';
+import '../../features/profile/bindings/profile_binding.dart';
+import '../../features/profile/views/profile_view.dart';
+import '../../features/splash/bindings/splash_binding.dart';
+import '../../features/splash/views/splash_view.dart';
 import 'app_routes.dart';
 
 abstract final class AppPages {
@@ -17,8 +31,8 @@ abstract final class AppPages {
   static final pages = <GetPage<dynamic>>[
     GetPage(
       name: AppRoutes.splash,
-      page: () => const FoodoRoutePage(title: AppStrings.appName),
-      binding: FoodoRouteBinding(),
+      page: () => const SplashView(),
+      binding: SplashBinding(),
     ),
     GetPage(
       name: AppRoutes.onboarding,
@@ -27,8 +41,8 @@ abstract final class AppPages {
     ),
     GetPage(
       name: AppRoutes.signIn,
-      page: () => const SignInPage(),
-      binding: SignInBinding(),
+      page: () => const LoginView(),
+      binding: AuthBinding(),
     ),
     GetPage(
       name: AppRoutes.signUp,
@@ -42,8 +56,8 @@ abstract final class AppPages {
     ),
     GetPage(
       name: AppRoutes.home,
-      page: () => const FoodoRoutePage(title: AppStrings.homeTitle),
-      binding: FoodoRouteBinding(),
+      page: () => const HomeView(),
+      binding: HomeBinding(),
       middlewares: [AuthMiddleware()],
     ),
     GetPage(
@@ -90,32 +104,38 @@ abstract final class AppPages {
     ),
     GetPage(
       name: AppRoutes.payment,
-      page: () => const FoodoRoutePage(title: AppStrings.paymentTitle),
-      binding: FoodoRouteBinding(),
+      page: () => const PaymentView(),
+      binding: PaymentBinding(),
       middlewares: [AuthMiddleware()],
     ),
     GetPage(
       name: AppRoutes.orderSuccess,
-      page: () => const FoodoRoutePage(title: AppStrings.orderSuccessTitle),
-      binding: FoodoRouteBinding(),
+      page: () => const OrderSuccessView(),
+      binding: OrdersBinding(),
       middlewares: [AuthMiddleware()],
     ),
     GetPage(
       name: AppRoutes.orders,
-      page: () => const FoodoRoutePage(title: AppStrings.ordersTitle),
-      binding: FoodoRouteBinding(),
+      page: () => const Scaffold(
+        appBar: null,
+        body: OrderHistoryView(),
+      ),
+      binding: OrdersBinding(),
       middlewares: [AuthMiddleware()],
     ),
     GetPage(
       name: AppRoutes.orderDetails,
-      page: () => const FoodoRoutePage(title: AppStrings.orderDetailsTitle),
-      binding: FoodoRouteBinding(),
+      page: () => const OrderDetailView(),
+      binding: OrdersBinding(),
       middlewares: [AuthMiddleware()],
     ),
     GetPage(
       name: AppRoutes.profile,
-      page: () => const FoodoRoutePage(title: AppStrings.profileTitle),
-      binding: FoodoRouteBinding(),
+      page: () => const Scaffold(
+        appBar: null,
+        body: ProfileView(),
+      ),
+      binding: ProfileBinding(),
       middlewares: [AuthMiddleware()],
     ),
     GetPage(
@@ -138,8 +158,8 @@ abstract final class AppPages {
     ),
     GetPage(
       name: AppRoutes.notifications,
-      page: () => const FoodoRoutePage(title: AppStrings.notificationsTitle),
-      binding: FoodoRouteBinding(),
+      page: () => const NotificationsView(),
+      binding: NotificationsBinding(),
       middlewares: [AuthMiddleware()],
     ),
     GetPage(
