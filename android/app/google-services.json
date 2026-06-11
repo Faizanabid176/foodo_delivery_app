@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "62117508278",
+    "project_id": "foodo-86449",
+    "storage_bucket": "foodo-86449.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:62117508278:android:0071f8c332ff5248f6e217",
+        "android_client_info": {
+          "package_name": "com.faizan.foododeliveryapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDP8vp1WAAUr6bPBmbWPT0265bQymtv6L4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
